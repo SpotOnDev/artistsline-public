@@ -7,10 +7,10 @@
 <navigation>
     <div class="container_12">
         <ul>
-            <li><a href="http://test.barkbarkbark.info:8000">home</a></li>
-            <li><a href="http://test.barkbarkbark.info:8000/products">products</a></li>
-            <li><a href="http://test.barkbarkbark.info:8000/about">about</a></li>
-            <li><a href="http://test.barkbarkbark.info:8000/contact">contact</a></li>
+            <li>{{ HTML::link('/', 'home') }}</li>
+            <li>{{ HTML::link('/products', 'products') }}</li>
+            <li>{{ HTML::link('/about', 'about') }}</li>
+            <li>{{ HTML::link('/contact', 'contact') }}</li>
         </ul>
     </div>
 </navigation>
