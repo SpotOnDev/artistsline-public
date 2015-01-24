@@ -41,7 +41,7 @@ class ShippingController extends \BaseController {
 	{
 		App::bind('Shipping\ShippingInterface', 'Shipping\EasyPostShipping');
 
-		$validation = Validator::make(Input::all(), Customer::$rules);
+		$validation = Validator::make(Input::all(), Shopper::$rules);
 
 		if($validation->fails())
 		{
@@ -64,19 +64,19 @@ class ShippingController extends \BaseController {
 		}
 
 		if(Input::get('use') == 'Y') Input::flash();
-		$customer = new Customer;
-		$customer->email = Input::get('email');
-		$customer->first_name = Input::get('first_name');
-		$customer->last_name = Input::get('last_name');
-		$customer->address1 = Input::get('address');
-		$customer->address2 = Input::get('address2');
-		$customer->city = Input::get('city');
-		$customer->state = Input::get('state');
-		$customer->zip = Input::get('zipcode');
-		$customer->phone = Input::get('phone');
-		$customer->save();
+		$shopper = new Shopper;
+		$shopper->email = Input::get('email');
+		$shopper->first_name = Input::get('first_name');
+		$shopper->last_name = Input::get('last_name');
+		$shopper->address1 = Input::get('address');
+		$shopper->address2 = Input::get('address2');
+		$shopper->city = Input::get('city');
+		$shopper->state = Input::get('state');
+		$shopper->zip = Input::get('zipcode');
+		$shopper->phone = Input::get('phone');
+		$shopper->save();
 
-		Session::put('customer_id', $customer->id);
+		Session::put('shopper_id', $shopper->id);
 
 		return Redirect::action('BillingController@index');
 	}

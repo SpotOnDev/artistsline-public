@@ -39,12 +39,6 @@ class BillingController extends \BaseController {
 	 */
 	public function store()
 	{
-//		App::bind('Billing\BillingInterface', 'Billing\StripeBilling');
-//		$billing = App::make('Billing\BillingInterface');
-//		return $billing->charge([
-//			'name' => Input::get('name'),
-//			'token' => Input::get('stripe-token')
-//		]);
 		Session::put('stripe_token', Input::get('stripe-token'));
 		return Redirect::to('review');
 	}

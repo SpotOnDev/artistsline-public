@@ -13,10 +13,10 @@ class ReviewController extends \BaseController {
 	{
 		$bill = App::make('Billing\BillingInterface');
 		$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
-		$customer = Customer::find(Session::get('customer_id'));
+		$shopper = Shopper::find(Session::get('shopper_id'));
 		$shipping = calculateShipping($cart_contents) * SHIP_RATE;
 		if(cartTotal($cart_contents) > 3000) $shipping = 0;
-		return View::make('checkout/review', array('customer' => $customer, 'shipping' => $shipping, 'billing' => $bill->getInfo(Session::get('stripe_token'))->card, 'cart_contents' => $cart_contents, 'total' => 0, 'i' => 0));
+		return View::make('checkout/review', array('shopper' => $shopper, 'shipping' => $shipping, 'billing' => $bill->getInfo(Session::get('stripe_token'))->card, 'cart_contents' => $cart_contents, 'total' => 0, 'i' => 0));
 
 	}
 
@@ -48,8 +48,21 @@ class ReviewController extends \BaseController {
 
 		if(Input::get('agree_terms') == 'Y')
 		{
+			$shopper = Shopper::find(Session::get('shopper_id'));
+			$customer = new Customer;
+			$customer->email = $shopper->email;
+			$customer->first_name = $shopper->first_name;
+			$customer->last_name = $shopper->last_name;
+			$customer->address1 = $shopper->address1;
+			$customer->address2 = $shopper->address2;
+			$customer->city = $shopper->city;
+			$customer->state = $shopper->state;
+			$customer->zip = $shopper->zip;
+			$customer->phone = $shopper->phone;
+			$customer->save();
+
 			$order = new Order;
-			$order->customer_id = Session::get('customer_id');
+			$order->customer_id = $shopper->id;
 			$order->total = $total;
 			$order->shipping = 590 * $package_amount;
 			$order->credit_card_number = $billing_info->last4;
@@ -89,16 +102,14 @@ class ReviewController extends \BaseController {
 
 			if($charge->paid)
 			{
-				$customer = Customer::find(Session::get('customer_id'));
-
 				$shipping = App::make('Shipping\ShippingInterface');
 				$tracking = $shipping->create([
-					'name' => $customer->first_name . ' ' . $customer->last_name,
-					'address' => $customer->address1,
-					'address2' => $customer->address2,
-					'city' => $customer->city,
-					'state' => $customer->state,
-					'zip' => $customer->zip
+					'name' => $shopper->first_name . ' ' . $shopper->last_name,
+					'address' => $shopper->address1,
+					'address2' => $shopper->address2,
+					'city' => $shopper->city,
+					'state' => $shopper->state,
+					'zip' => $shopper->zip
 				], $cart_contents);
 				$tracking_numbers = null;
 				foreach ($tracking as $number){

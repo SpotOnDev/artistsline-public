@@ -13,11 +13,11 @@
                 <div id="shipping">
                     <h1>Shipping Info</h1>
                     <ul>
-                        <li>{{ $customer->first_name }} {{ $customer->last_name }}</li>
-                        <li>{{ $customer->address1 }} {{$customer->address2}}</li>
-                        <li>{{ $customer->city }} {{ $customer->state }} {{ $customer->zip }}</li>
-                        <li>{{ $customer->email }}</li>
-                        <li>{{ $customer->phone }}</li>
+                        <li>{{ $shopper->first_name }} {{ $shopper->last_name }}</li>
+                        <li>{{ $shopper->address1 }} {{$shopper->address2}}</li>
+                        <li>{{ $shopper->city }} {{ $shopper->state }} {{ $shopper->zip }}</li>
+                        <li>{{ $shopper->email }}</li>
+                        <li>{{ $shopper->phone }}</li>
                         <li>{{ HTML::link('shipping', 'Edit') }}</li>
                     </ul>
                 </div>
