@@ -2,12 +2,12 @@
 
 Use Mail;
 abstract class Mailer {
-    Public function sendTo($user, $subject, $view, $data)
+    Public function sendTo($user, $subject, $view, $data, $bcc)
     {
-        Mail::queue($view, $data, function($message) use($user, $subject, $data)
+        Mail::queue($view, $data, function($message) use ($user, $subject, $bcc, $data)
         {
             $message->to($user->email)
-					->bcc('adster2@gmail.com')
+					->bcc($bcc)
                     ->subject($subject);
         });
     }

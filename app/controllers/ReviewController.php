@@ -43,7 +43,9 @@ class ReviewController extends \BaseController {
 		$billing_info = $bill->getInfo(Session::get('stripe_token'))->card;
 
 		$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
+		$shipping_amount = calculateShipping($cart_contents) * SHIP_RATE;
 		$total = cartTotal($cart_contents);
+		if($total > 3000) $shipping_amount = 0;
 		$package_amount = calculateShipping($cart_contents);
 
 		if(Input::get('agree_terms') == 'Y')
@@ -60,11 +62,12 @@ class ReviewController extends \BaseController {
 			$customer->zip = $shopper->zip;
 			$customer->phone = $shopper->phone;
 			$customer->save();
+			$customer_id = $customer->id;
 
 			$order = new Order;
 			$order->customer_id = $shopper->id;
 			$order->total = $total;
-			$order->shipping = 590 * $package_amount;
+			$order->shipping = $shipping_amount;
 			$order->credit_card_number = $billing_info->last4;
 			$order->save();
 			$order_id = $order->id;
@@ -97,6 +100,9 @@ class ReviewController extends \BaseController {
 
 			catch(Stripe_CardError $e)
 			{
+				OrderContent::where('order_id', $order_id)->delete();
+				Order::find($order_id)->delete();
+				Customer::find($customer_id)->delete();
 				return Redirect::refresh()->withFlashMessage($e->getMessage());
 			}
 
@@ -117,6 +123,8 @@ class ReviewController extends \BaseController {
 				}
 
 				Session::flash('order_id', $order_id);
+				Session::flash('shipping_amount', $shipping_amount);
+				Session::flash('customer_id', $customer_id);
 				Session::flash('tracking_numbers', $tracking_numbers);
 				Session::flash('total', $total);
 				Session::flash('package_amount', $package_amount);

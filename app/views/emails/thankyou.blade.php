@@ -22,11 +22,11 @@
             @endforeach
                 <tr>
                     <td colspan="2"> </td><th align="right">Shipping</th>
-                    <td align="right">${{ number_format(SHIP_RATE * $package_amount/100, 2) }}</td>
+                    <td align="right">${{ number_format($shipping_amount/100, 2) }}</td>
                 </tr>
                 <tr>
                     <td colspan="2"> </td><th align="right">Total</th>
-                    <td align="right">${{ number_format($total+SHIP_RATE/100, 2) }}</td>
+                    <td align="right">${{ number_format(($total + $shipping_amount)/100, 2) }}</td>
                 </tr>
         </table>
     </body>

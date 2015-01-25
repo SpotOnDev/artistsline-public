@@ -1,4 +1,4 @@
 <?php
 class OrderContent extends Eloquent{
-    protected $table = 'order-contents';
+    protected $table = 'order_contents';
 }

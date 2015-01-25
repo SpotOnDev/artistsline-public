@@ -198,6 +198,13 @@ footer > h3 {
 	font-weight: 300;
 }
 
+footer > a {
+	display: block;
+	margin: 15px auto;
+	width: 119px;
+	height: 26px;
+}
+
 /*____________________________________________________________
 /////////////////////////Home Page\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 */
@@ -441,6 +448,7 @@ li.about {
 	display: block;
 	margin: 0 auto;
 	border-radius: 4px;
+	border:none;
 	padding:10px 0;
 	color:#fff;
 	background: #80bd01;
@@ -448,7 +456,7 @@ li.about {
 	font-size: 16px;
 	font-weight: 400;
 	text-align: center;
-	width: 146px;
+	width: 275px;
 }
 /*____________________________________________________________
 /////////////////////////Cart Page\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -457,6 +465,10 @@ li.about {
 #cart-content {
 	padding: 50px 30px;
 	min-width: 610px;
+}
+
+#cart-content form {
+	overflow: hidden;
 }
 
 table {
@@ -517,6 +529,15 @@ table p {
 	margin:0 0 0 0;
 }
 
+#paypal {
+	float: right;
+	margin-right: 40px;
+}
+
+#paypal > p {
+	text-align: center;
+	margin: 15px 0;
+}
 
 /*_____________________________________________________________
 ///////////////////////Checkout Pages\\\\\\\\\\\\\\\\\\\\\\\\\\
