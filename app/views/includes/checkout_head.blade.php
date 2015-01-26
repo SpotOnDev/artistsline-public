@@ -4,4 +4,4 @@
 {{ HTML::style('css/reset.css') }}
 {{ HTML::style('css/style.css') }}
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
