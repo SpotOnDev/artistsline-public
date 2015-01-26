@@ -12,7 +12,7 @@ class BillingController extends \BaseController {
 	public function __construct()
 	{
 		$this->beforeFilter('emptyCart', array('on' => 'get'));
-		//$this->beforeFilter('noCustomerId', array('on' => 'get'));
+		$this->beforeFilter('noCustomerId', array('on' => 'get'));
 	}
 
 	public function index()

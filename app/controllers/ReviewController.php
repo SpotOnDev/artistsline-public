@@ -5,7 +5,7 @@ class ReviewController extends \BaseController {
 
 	public function __construct()
 	{
-		$this->beforeFilter('noToken', array('on' => 'get'));
+		//$this->beforeFilter('noToken', array('on' => 'get'));
 		$this->beforeFilter('emptyCart', array('on' => 'get'));
 	}
 
