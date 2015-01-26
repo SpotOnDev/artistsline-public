@@ -13,11 +13,13 @@ class BillingController extends \BaseController {
 	{
 		$this->beforeFilter('emptyCart', array('on' => 'get'));
 		$this->beforeFilter('noCustomerId', array('on' => 'get'));
+		$this->beforeFilter('billingUnset', array('on' => 'get'));
+		$this->beforeFilter('billingCompleted', array('on' => 'get'));
 	}
 
 	public function index()
 	{
-		return View::make('checkout/billing', ['page_title' => 'Billing', 'billing_header' => 'class="active"'])->with('states', $this->states);;
+		return View::make('checkout/billing', ['page_title' => 'Billing', 'billing_header' => 'class="active"'])->with('states', $this->states);
 	}
 
 
@@ -40,6 +42,7 @@ class BillingController extends \BaseController {
 	public function store()
 	{
 		Session::put('stripe_token', Input::get('stripe-token'));
+		Session::put('billing_form', 'completed');
 		return Redirect::to('review');
 	}
 

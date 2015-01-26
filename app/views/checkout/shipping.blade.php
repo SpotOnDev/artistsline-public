@@ -9,48 +9,83 @@
                         <ul>
                             <li class="form-row">
                                 <h3><span>*</span>First Name</h3>
-                                {{ Form::text('first_name') }}
+                                @if(isset($first_name))
+                                    {{ Form::text('first_name', $first_name) }}
+                                @else
+                                    {{ Form::text('first_name') }}
+                                @endif
                                 {{ $errors->first('first_name', '<span class=error>:message</span>') }}
                             </li>
                             <li class="form-row">
                                 <h3><span>*</span>Last Name</h3>
-                                {{ Form::text('last_name') }}
+                                @if(isset($last_name))
+                                    {{ Form::text('last_name', $last_name) }}
+                                @else
+                                    {{ Form::text('last_name') }}
+                                @endif
                                 {{ $errors->first('last_name', '<span class=error>:message</span>') }}
                             </li>
                             <li class="form-row">
                                 <h3><span>*</span>Email</h3>
-                                {{ Form::text('email') }}
+                                @if(isset($email))
+                                    {{ Form::text('email', $email) }}
+                                @else
+                                    {{ Form::text('email') }}
+                                @endif
                                 {{ $errors->first('email', '<span class=error>:message</span>') }}
                             </li>
                             <li class="form-row">
                                 <h3><span>*</span>Address</h3>
-                                {{ Form::text('address') }} <br>
-                                {{ Form::text('address2') }}
+                                @if(isset($address1))
+                                    {{ Form::text('address', $address1) }} <br>
+                                    {{ Form::text('address2', $address2) }}
+                                @else
+                                    {{ Form::text('address') }} <br>
+                                    {{ Form::text('address2') }}
+                                @endif
                                 {{ $errors->first('address', '<span class=error>:message</span>') }}
                             </li>
                             <li class="form-row">
                                 <h3><span>*</span>City</h3>
-                                {{ Form::text('city') }}
+                                @if(isset($city))
+                                    {{ Form::text('city', $city) }}
+                                @else
+                                    {{ Form::text('city') }}
+                                @endif
                                 {{ $errors->first('city', '<span class=error>:message</span>') }}
                             </li>
                             <li class="form-row">
                                 <h3><span>*</span>State</h3>
-                                {{ Form::select('state', $states) }}
+                                @if(isset($state))
+                                    {{ Form::select('state', $states, $state) }}
+                                @else
+                                    {{ Form::select('state', $states) }}
+                                @endif
                             </li>
                             <li class="form-row">
                                 <h3><span>*</span>Zip Code</h3>
-                                {{ Form::text('zipcode') }}
+                                @if(isset($zip))
+                                    {{ Form::text('zipcode', $zip) }}
+                                @else
+                                    {{ Form::text('zipcode') }}
+                                @endif
                                 {{ $errors->first('zipcode', '<span class=error>:message</span>') }}
                             </li>
                             <li class="form-row">
                                 <h3><span>*</span>Phone</h3>
-                                {{ Form::text('phone') }}
+                                @if(isset($phone))
+                                    {{ Form::text('phone', $phone) }}
+                                @else
+                                    {{ Form::text('phone') }}
+                                @endif
                                 {{ $errors->first('phone', '<span class=error>:message</span>') }}
                             </li>
                         </ul>
                     </li>
                     <li>
-                        {{ Form::checkbox('use', 'Y') }}
+                        @if(!Session::has('billing_form'))
+                            {{ Form::checkbox('use', 'Y') }}
+                        @endif
                         {{ Form::label('use', 'Use Same Address for Billing') }}
                     </li>
                 </ul>

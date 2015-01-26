@@ -29,6 +29,21 @@ Route::filter('emptyCart', function()
 	}
 });
 
+Route::filter('billingCompleted', function()
+{
+	if(Session::has('billing_form')){
+		if(Session::get('billing_form') == 'completed')
+		return Redirect::to('review');
+	}
+});
+
+Route::filter('billingUnset', function()
+{
+	if(Input::has('unset')){
+		Session::forget('billing_form');
+	}
+});
+
 Route::filter('noCustomerId', function()
 {
 	if (Session::has('customer_id'))

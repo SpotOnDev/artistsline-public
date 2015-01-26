@@ -28,7 +28,7 @@
 					<li>{{ $billing->address_line1 }} {{ $billing->address_line2 }}</li>
 					<li>{{ $billing->address_city }} {{ $billing->address_state }} {{ $billing->address_zip }}</li>
 					<li>Card: {{ str_repeat("*",12) }}{{ $billing->last4 }}</li>
-					<li>{{ HTML::link('billing', 'Edit') }}</li>
+					<li>{{ HTML::link('billing?unset=1', 'Edit') }}</li>
                     </ul>
                 </div>
             </div>

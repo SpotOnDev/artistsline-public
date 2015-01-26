@@ -17,6 +17,12 @@ class ShippingController extends \BaseController {
 
 	public function index()
 	{
+		if(Session::has('shopper_id'))
+		{
+			$shopper = Shopper::find(Session::get('shopper_id'))->toArray();
+			$page_arguments = array_merge($shopper, ['page_title' => 'Shipping', 'shipping_header' => 'class="active"']);
+			return View::make('checkout/shipping', $page_arguments)->with('states', $this->states);
+		}
 		return View::make('checkout/shipping', ['page_title' => 'Shipping', 'shipping_header' => 'class="active"'])->with('states', $this->states);
 	}
 
