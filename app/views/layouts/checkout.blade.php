@@ -9,8 +9,7 @@
         <footer>
             @include('includes.footer')
         </footer>
+        <script src="https://js.stripe.com/v2/"></script>
+        <script src="/js/billing.js"></script>
     </body>
-
-    <script src="https://js.stripe.com/v2/"></script>
-    <script src="/js/billing.js"></script>
 </html>
