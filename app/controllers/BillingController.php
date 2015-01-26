@@ -17,7 +17,7 @@ class BillingController extends \BaseController {
 
 	public function index()
 	{
-		return View::make('checkout/billing')->with('states', $this->states);;
+		return View::make('checkout/billing', ['page_title' => 'Billing', 'billing_header' => 'class="active"'])->with('states', $this->states);;
 	}
 
 

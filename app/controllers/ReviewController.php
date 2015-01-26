@@ -16,7 +16,7 @@ class ReviewController extends \BaseController {
 		$shopper = Shopper::find(Session::get('shopper_id'));
 		$shipping = calculateShipping($cart_contents) * SHIP_RATE;
 		if(cartTotal($cart_contents) > 3000) $shipping = 0;
-		return View::make('checkout/review', array('shopper' => $shopper, 'shipping' => $shipping, 'billing' => $bill->getInfo(Session::get('stripe_token'))->card, 'cart_contents' => $cart_contents, 'total' => 0, 'i' => 0));
+		return View::make('checkout/review', ['page_title' => 'Review Order', 'review_header' => 'class="active"', 'shopper' => $shopper, 'shipping' => $shipping, 'billing' => $bill->getInfo(Session::get('stripe_token'))->card, 'cart_contents' => $cart_contents, 'total' => 0, 'i' => 0]);
 
 	}
 

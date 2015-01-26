@@ -22,6 +22,18 @@ Route::get('about', function()
 	return View::make('pages/about', array('cart_contents' => $cart_contents));
 });
 
+Route::get('return', function()
+{
+	$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
+	return View::make('pages/return_policy', ['cart_contents' => $cart_contents]);
+});
+
+Route::get('privacy', function()
+{
+	$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
+	return View::make('pages/privacy_policy', ['cart_contents' => $cart_contents]);
+});
+
 Route::get('contact', ['uses' => 'ContactController@index', 'as' => 'pages.contact']);
 Route::post('contact', ['uses' => 'ContactController@store']);
 

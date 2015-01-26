@@ -17,7 +17,7 @@ class ShippingController extends \BaseController {
 
 	public function index()
 	{
-		return View::make('checkout/shipping')->with('states', $this->states);
+		return View::make('checkout/shipping', ['page_title' => 'Shipping', 'shipping_header' => 'class="active"'])->with('states', $this->states);
 	}
 
 

@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
     <head>
+        <title>{{ $page_title or 'Artists Line' }}</title>
         @include('includes.checkout_head')
     </head>
     <body>
@@ -9,7 +10,8 @@
         <footer>
             @include('includes.footer')
         </footer>
-        <script src="https://js.stripe.com/v2/"></script>
-        {{ HTML::script('js/billing.js') }}
     </body>
+
+    <script src="https://js.stripe.com/v2/"></script>
+    <script src="/js/billing.js"></script>
 </html>
