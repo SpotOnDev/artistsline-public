@@ -10,6 +10,6 @@
             @include('includes.footer')
         </footer>
         <script src="https://js.stripe.com/v2/"></script>
-        <script src="/js/billing.js"></script>
+        {{ HTML::script('js/billing.js') }}
     </body>
 </html>
