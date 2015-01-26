@@ -3,5 +3,5 @@
 <div>
     <a href="/privacy_policy.php">Privacy Policy</a>
     <a href="/return_policy.php">Return Policy</a>
-</div>
     <a target="_blank" href="https://stripe.com">{{ HTML::image('images/solid_stripe.png') }}</a>
+</div>
