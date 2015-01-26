@@ -11,19 +11,26 @@
                 </ul>
                 <p>
             </div>
-            <span><?php if (isset($e_message)) echo $e_message; ?></span>
+            @if (Session::has('e_message'))
+                <div class="error">
+                    {{ Session::get('e_message') }}
+                </div>
+            @endif
             {{ Form::open(array('route' => 'pages.contact', 'id' => 'contact-form')) }}
                 <div>
                     <h3>Name</h3>
-                    {{ Form::text('name') }}
+                    {{ Form::text('name') }}<br>
+					{{ $errors->first('name', '<span class=error>:message</span>') }}
                 </div>
                 <div>
                     <h3>E-mail</h3>
-                    {{ Form::text('email') }}
+                    {{ Form::text('email') }}<br>
+					{{ $errors->first('email', '<span class=error>:message</span>') }}
                 </div>
                 <div>
                     <h3>Message</h3>
                     {{ Form::textarea('message') }}
+                    {{ $errors->first('message', '<span class=error>:message</span>') }}
                 </div>
                 {{ Form::submit('Submit', array('id' => 'contact-submit')) }}
             {{ Form::close() }}

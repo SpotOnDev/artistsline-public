@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -23,11 +22,8 @@ Route::get('about', function()
 	return View::make('pages/about', array('cart_contents' => $cart_contents));
 });
 
-Route::get('contact', function()
-{
-	$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
-	return View::make('pages/contact', array('cart_contents' => $cart_contents));
-});
+Route::get('contact', ['uses' => 'ContactController@index', 'as' => 'pages.contact']);
+Route::post('contact', ['uses' => 'ContactController@store']);
 
 Route::get('products', function()
 {
@@ -40,11 +36,6 @@ Route::get('products/{product}', function($product)
 	$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
 	return View::make('products/'. $product, array('cart_contents' => $cart_contents))->with('product', $product);
 });
-
-Route::post('contact', array('as' => 'pages.contact', function()
-{
-	return View::make('pages/contact');
-}));
 
 Route::put('cart/add/{product}', array('uses' => 'CartController@add', 'as' => 'cart.add'));
 Route::patch('cart', array('uses' => 'CartController@update', 'as' => 'cart.update'));

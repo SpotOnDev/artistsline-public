@@ -2,7 +2,7 @@
 
 Use Mail;
 abstract class Mailer {
-    Public function sendTo($user, $subject, $view, $data, $bcc)
+    public function sendTo($user, $subject, $view, $data, $bcc)
     {
         Mail::queue($view, $data, function($message) use ($user, $subject, $bcc, $data)
         {
@@ -11,4 +11,14 @@ abstract class Mailer {
                     ->subject($subject);
         });
     }
+	
+	public function contact($from, $to, $subject, $view, $data)
+	{
+		Mail::queue($view, $data, function($message) use ($from, $to, $subject, $data)
+	   {
+			$message->from($from);
+		   	$message->to($to)
+					->subject($subject);
+	   });
+	}
 }
