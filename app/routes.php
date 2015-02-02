@@ -58,4 +58,4 @@ Route::resource('shipping', 'ShippingController');
 Route::resource('billing', 'BillingController');
 Route::resource('review', 'ReviewController');
 Route::resource('confirm', 'ConfirmController');
-Route::post('webhook', 'WebhookController@packageShipped');
+Route::post('tracking', 'WebhookController@packageShipped');
