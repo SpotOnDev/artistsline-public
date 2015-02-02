@@ -29,7 +29,7 @@ class EasyPostShipping implements ShippingInterface {
 
         $i = 0;
         while ($i < $package_amount) {
-            $shipment = Shipment::create(array(
+            $package = Shipment::create(array(
                 'to_address' => array(
                     'name' => $data['name'],
                     'street1' => $data['address'],
@@ -50,12 +50,12 @@ class EasyPostShipping implements ShippingInterface {
                     'weight' => 32
                 )
             ));
-            $shipment->buy($shipment->lowest_rate(array('USPS'), array('First', 'Priority')));
-            $tracking_code = json_decode($shipment, true);
-            $tracking[$i] = $tracking_code['tracking_code'];
+            $package->buy($package->lowest_rate(array('USPS'), array('First', 'Priority')));
+            $package_object = json_decode($package);
+            $shipment[$i] = $package_object;
             $i++;
         }
-        return $tracking;
+        return $shipment;
     }
 
 }

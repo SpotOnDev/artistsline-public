@@ -81,6 +81,24 @@ class ReviewController extends \BaseController {
 				$order_content->price_per = $item->products['price'];
 				$order_content->save();
 			}
+			try {
+				$shipping = App::make('Shipping\ShippingInterface');
+				$shipment = $shipping->create([
+					'name' => $shopper->first_name . ' ' . $shopper->last_name,
+					'address' => $shopper->address1,
+					'address2' => $shopper->address2,
+					'city' => $shopper->city,
+					'state' => $shopper->state,
+					'zip' => $shopper->zip
+				], $cart_contents);
+			}
+			catch(Exception $e)
+			{
+				OrderContent::where('order_id', $order_id)->delete();
+				Order::find($order_id)->delete();
+				Customer::find($customer_id)->delete();
+				return Redirect::refresh()->withFlashMessage('There was an error in our system. Please try again in a few minutes.');
+			}
 
 			$billing = App::make('Billing\BillingInterface');
 			try
@@ -108,20 +126,36 @@ class ReviewController extends \BaseController {
 
 			if($charge->paid)
 			{
-				$shipping = App::make('Shipping\ShippingInterface');
-				$tracking = $shipping->create([
-					'name' => $shopper->first_name . ' ' . $shopper->last_name,
-					'address' => $shopper->address1,
-					'address2' => $shopper->address2,
-					'city' => $shopper->city,
-					'state' => $shopper->state,
-					'zip' => $shopper->zip
-				], $cart_contents);
 				$tracking_numbers = null;
-				foreach ($tracking as $number){
-					$tracking_numbers .= '  ' . $number;
+				$n = 1;
+				foreach ($shipment as $package){
+					$tracking_numbers .= '  ' . $package->tracking_code;
+					$tracking[$n] = $package->tracking_code;
+					$trk_id[$n] = $package->tracker->id;
+					$n++;
 				}
+				$n = 1;
+				$pack = packageProducts($cart_contents);
+				foreach($pack as $pkg)
+				{
+					$i = 1;
 
+					while($i < 5)
+					{
+						if (isset($pkg[$i]))
+						{
+							$box = new Package;
+							$box->order_id = $order_id;
+							$box->trk_id = $trk_id[$n];
+							$box->tracking = $tracking[$n];
+							$box->product_id = $i;
+							$box->quantity = $pkg[$i];
+							$box->save();
+						}
+						$i++;
+					}
+					$n++;
+				}
 				Session::flash('order_id', $order_id);
 				Session::flash('shipping_amount', $shipping_amount);
 				Session::flash('customer_id', $customer_id);

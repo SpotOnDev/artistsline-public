@@ -9,35 +9,12 @@ function calculateShipping($cart_contents = [])
     {
         $package[$item->products['size']] = $item->quantity;
     }
+    $packages = array();
+    if(array_key_exists('small', $package)) $packages[] = $package['small']/24;
+    if(array_key_exists('medium', $package)) $packages[] = $package['medium']/8;
+    if(array_key_exists('large', $package)) $packages[] = $package['large']/2;
 
-    if(isset($package['medium']))
-    {
-        if(isset($package['small']))
-        {
-            $package['small'] += $package['medium'] * 2;
-        } else
-        {
-            $package['small'] = $package['medium'] * 2;
-        }
-    }
-    $package_amount = 1;
-    if (array_key_exists('x_small', $package) && !array_key_exists('small', $package) && !array_key_exists('large', $package)) {
-        $package_amount = 1;
-    } elseif (array_key_exists('small', $package) && array_key_exists('large', $package)) {
-        $package_amount = 1;
-        if (($package['small'] > 4) || ($package['large'] > 1)) {
-            if ($package['small'] > ($package['large'] * 4)) {
-                $package_amount = ceil(($package['small'] - (4 * $package['large'])) / 12) + $package['large'];
-            } else {
-                $package_amount = ceil(($package['small'] / 4) + ($package['large'] - ($package['large'] / 4)) / 2);
-            }
-        }
-    } elseif (array_key_exists('small', $package)) {
-        $package_amount = ceil($package['small'] / 12);
-    } elseif (array_key_exists('large', $package)) {
-        $package_amount = ceil($package['large'] / 2);
-    }
-    return $package_amount;
+    return ceil(array_sum($packages));
 }
 
 function cartQuantity($cart_contents = [])
@@ -46,7 +23,7 @@ function cartQuantity($cart_contents = [])
 
     foreach($cart_contents as $item)
     {
-        $cart_quantity =+ $item->quantity;
+        $cart_quantity += $item->quantity;
     }
 
     return $cart_quantity;
@@ -62,4 +39,113 @@ function cartTotal($cart_contents = [])
     }
 
     return $cart_total;
+}
+
+
+function packageProducts($cart_contents)
+{
+    $package_size = [];
+    foreach($cart_contents as $item)
+    {
+        $package_size[$item->products['size']] = $item->quantity;
+    }
+
+    $i = 1;
+    $package = [];
+
+    if(isset($package_size['large']))
+    {
+        $n = 0;
+        if ($package_size['large'] > 1) {
+            while ($n < floor($package_size['large'] / 2)) {
+                $package[$i] = [1 => 2];
+                $i++;
+                $n++;
+            }
+        }
+        if ($package_size['large'] % 2 > 0) {
+            $package[$i] = [1 => 1];
+            $modifier = 0.5;
+        }
+    }
+    if(isset($package_size['medium']))
+    {
+        if(isset($modifier))
+        {
+            if($package_size['medium'] > $modifier * 8)
+            {
+                $package[$i] += [2 => $modifier * 8];
+                $package_size['medium'] -= $package[$i][2];
+                unset($modifier);
+                $i++;
+            }
+            elseif($package_size['medium'] <= $modifier * 8)
+            {
+                $package[$i] += [2 => $package_size['medium']];
+                $package_size['medium'] = 0;
+                $modifier = $modifier + ($package_size['medium']/8);
+            }
+        }
+        if($package_size['medium'] > 7)
+        {
+            $n = 0;
+            while($n < floor($package_size['medium']/8))
+            {
+                $package[$i] = [2 => 8];
+                $i++;
+                $n++;
+            }
+        }
+        if($package_size['medium']%8 > 0)
+        {
+            $package[$i] = [2 => $package_size['medium']%8];
+            $modifier = ( 8 - $package[$i][2])/8;
+        }
+    }
+    if(isset($package_size['small']))
+    {
+        $n = 0;
+        if(isset($modifier))
+        {
+            if($package_size['small'] > $modifier * 24)
+            {
+                $package[$i] += [3 => floor($modifier * 24)];
+                $package_size['small'] -= floor($modifier * 24);
+                $i++;
+            }
+            elseif($package_size['small'] <= $modifier * 24)
+            {
+                $package[$i] += [3 => $package_size['small']];
+                $package_size['small'] = 0;
+            }
+        }
+        if($package_size['small'] > 23)
+        {
+            while($n < floor($package_size['small']/24))
+            {
+                $package[$i] = [3 => 24];
+                $i++;
+                $n++;
+            }
+        }
+        if($package_size['small']%24 > 0)
+        {
+            $package[$i] = [3 => $package_size['small']%24];
+        }
+    }
+    if(isset($package_size['x_small']))
+    {
+        if(isset($package_size['large']) || isset($package_size['medium']))
+        {
+            $package[$i] += [4 => $package_size['x_small']];
+        }
+        elseif(isset($package_size['x_small']))
+        {
+            $package[$i] = [4 => $package_size['x_small']];
+        }
+
+
+    }
+
+    return $package;
 }
