@@ -38,9 +38,9 @@
                 {{ HTML::link('/shipping', 'Checkout', array('id' => 'checkout-button', 'class' => 'cart-button')) }}
                 {{ Form::submit('Update', array('class' => 'cart-button')) }}
             {{ Form::close() }}
-            <div id="paypal">
-                <a href="{{ URL::route('cart.paypal_payment') }}">{{ HTML::image('images/btn_checkout_pp_142x27.png') }}</a>
-            </div>
+            {{--<div id="paypal">--}}
+                {{--<a href="{{ URL::route('cart.paypal_payment') }}">{{ HTML::image('images/btn_checkout_pp_142x27.png') }}</a>--}}
+            {{--</div>--}}
             </div>
         </div>
     </div>

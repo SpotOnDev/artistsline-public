@@ -10,6 +10,7 @@ function calculateShipping($cart_contents = [])
         $package[$item->products['size']] = $item->quantity;
     }
     $packages = array();
+    if(array_key_exists('x_small', $package)) $packages[] = $package['x_small']/100;
     if(array_key_exists('small', $package)) $packages[] = $package['small']/24;
     if(array_key_exists('medium', $package)) $packages[] = $package['medium']/8;
     if(array_key_exists('large', $package)) $packages[] = $package['large']/2;
