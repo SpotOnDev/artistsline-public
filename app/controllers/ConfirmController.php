@@ -7,13 +7,14 @@ class ConfirmController extends \BaseController {
 
 	public function __construct(Mailer $mailer)
 	{
+		$this->beforeFilter('emptyCart', ['on' => 'get']);
 		$this->beforeFilter('emptyCart', array('on' => 'get'));
 		$this->mailer = $mailer;
 	}
 	public function __destruct()
 	{
 		Cart::where('user_session_id', Session::getId())->delete();
-		Shopper::find(Session::get('shopper_id'))->delete();
+		if(Session::has('shopper_id')) Shopper::find(Session::get('shopper_id'))->delete();
 		Session::flush();
 		Session::regenerate();
 	}

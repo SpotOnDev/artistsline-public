@@ -1,18 +1,20 @@
 <?php
-
+use \Billing\BillingInterface;
+App::bind('Billing\BillingInterface', 'Billing\PayPalBilling');
 class CartController extends \BaseController {
+
+	public function __construct(BillingInterface $billing)
+	{
+		$this->beforeFilter('emptyCart', array('on' => 'get'));
+		$this->billing = $billing;
+	}
 
 	public function index()
 	{
-		if(!!Cart::with('products')->where('user_session_id', Session::getId())->count())
-		{
-			$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
-			$shipping = calculateShipping($cart_contents) * SHIP_RATE;
-			if(cartTotal($cart_contents) > 3000) $shipping = 0;
-			return View::make('carts/cart', array('cart_contents' => $cart_contents, 'shipping' => $shipping, 'total' => 0, 'i' => 0));
-		}
-		return View::make('carts/empty_cart', ['cart_contents' => []]);
-
+		$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
+		$shipping = calculateShipping($cart_contents) * SHIP_RATE;
+		if(cartTotal($cart_contents) > 3000) $shipping = 0;
+		return View::make('carts/cart', array('cart_contents' => $cart_contents, 'shipping' => $shipping, 'total' => 0, 'i' => 0));
 	}
 
 	public function add($product)
@@ -85,6 +87,47 @@ class CartController extends \BaseController {
 	public function edit($id)
 	{
 		//
+	}
+
+	public function postPayment()
+	{
+		$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
+//		$billing = App::make('Billing\BillingInterface');
+		Session::forget('shopper_id');
+		try
+		{
+			$payer = $this->billing->generatePayer($cart_contents);
+		}
+		catch(\PayPal\Exception\PPConnectionException $e)
+		{
+			if(Config::get('app.debug'))
+			{
+				return "Exception: " . $e->getMessage() . PHP_EOL;
+				$err_data = json_decode($e->getData(), true);
+				exit;
+			}
+			else
+			{
+				return Redirect::refresh();
+			}
+		}
+		foreach($payer->getLinks() as $link)
+		{
+			if($link->getRel() == 'approval_url')
+			{
+				$redirect_url  = $link->getHref();
+				break;
+			}
+		}
+
+		if(isset($redirect_url))
+		{
+			Session::put('paypal_payment_id', $payer->getId());
+			return Redirect::away($redirect_url);
+		}
+
+		return Redirect::route('cart')
+			->with('error', 'An unknown error occurred. Please try again in a few minutes.');
 	}
 
 

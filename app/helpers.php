@@ -17,8 +17,9 @@ function calculateShipping($cart_contents = [])
     return ceil(array_sum($packages));
 }
 
-function cartQuantity($cart_contents = [])
+function cartQuantity()
 {
+    $cart_contents = Cart::where('user_session_id', Session::getId())->get();
     $cart_quantity = 0;
 
     foreach($cart_contents as $item)
@@ -29,8 +30,9 @@ function cartQuantity($cart_contents = [])
     return $cart_quantity;
 }
 
-function cartTotal($cart_contents = [])
+function cartTotal()
 {
+    $cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
     $cart_total = 0;
 
     foreach($cart_contents as $item)

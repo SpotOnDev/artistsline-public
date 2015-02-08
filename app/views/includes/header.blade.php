@@ -2,7 +2,7 @@
     <h1 id="logo">
         <a href="/"></a>
     </h1>
-    <a href="/cart" id="header-cart">Cart({{ cartQuantity($cart_contents) }}) | ${{ number_format(cartTotal($cart_contents)/100, 2) }} <i class="fa fa-shopping-cart"></i></a>
+    <a href="/cart" id="header-cart">Cart({{ cartQuantity() }}) | ${{ number_format(cartTotal()/100, 2) }} <i class="fa fa-shopping-cart"></i></a>
 </header>
 <navigation>
     <div class="container_12">

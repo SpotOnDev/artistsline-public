@@ -12,7 +12,9 @@ class ShippingController extends \BaseController {
 
 	public function __construct()
 	{
-		$this->beforeFilter('emptyCart', array('on' => 'get'));
+		$this->beforeFilter('emptyCart', ['on' => 'get']);
+		$this->beforeFilter('secureRequest', ['on' => 'get']);
+		Session::forget('paypal_payment_id');
 	}
 
 	public function index()

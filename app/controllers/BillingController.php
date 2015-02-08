@@ -11,6 +11,7 @@ class BillingController extends \BaseController {
 
 	public function __construct()
 	{
+		$this->beforeFilter('emptyCart', ['on' => 'get']);
 		$this->beforeFilter('emptyCart', array('on' => 'get'));
 		$this->beforeFilter('noCustomerId', array('on' => 'get'));
 		$this->beforeFilter('billingUnset', array('on' => 'get'));

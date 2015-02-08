@@ -13,9 +13,6 @@
                         <th></th><!--Column for remove button-->
                     </tr>
                     @foreach($cart_contents as $item)
-                    {{--$item[$i] = new Item();--}}
-                    {{--$item[$i]->setName($cart_item->name)->setCurrency('USD')->setQuantity($cart_item->quantity)->setPrice($cart_item->price/100);--}}
-                    {{--$ship->calcPackageSize($cart_item->size, $cart_item->quantity);--}}
                     <?php
                     $subtotal = $item->products['price'] * $item['quantity'];
                     $total += $subtotal;
@@ -41,7 +38,10 @@
                 {{ HTML::link('/shipping', 'Checkout', array('id' => 'checkout-button', 'class' => 'cart-button')) }}
                 {{ Form::submit('Update', array('class' => 'cart-button')) }}
             {{ Form::close() }}
+            <div id="paypal">
+                <a href="{{ URL::route('cart.paypal_payment') }}">{{ HTML::image('images/btn_checkout_pp_142x27.png') }}</a>
+            </div>
+            </div>
         </div>
-        <!--<a href="#"><img src="https://www.paypalobjects.com/webstatic/en_US/btn/btn_checkout_pp_142x27.png"></a>-->
     </div>
 @stop

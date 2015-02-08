@@ -12,50 +12,87 @@
 
 Route::get('/', function()
 {
-	$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
-	return View::make('pages/home', array('cart_contents' => $cart_contents));
+	return View::make('pages/home');
 });
+
+Route::get('review', [
+	'uses' => 'ReviewController@index',
+	'as' => 'review.index'
+]);
+Route::post('review', [
+	'uses' => 'ReviewController@store',
+	'as' => 'review.store'
+]);
+Route::post('review_paypal', [
+	'uses' => 'ReviewController@store_paypal',
+	'as' => 'review.paypal'
+]);
 
 Route::get('about', function()
 {
-	$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
-	return View::make('pages/about', array('cart_contents' => $cart_contents));
+	return View::make('pages/about');
 });
 
 Route::get('return', function()
 {
-	$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
-	return View::make('pages/return_policy', ['cart_contents' => $cart_contents]);
+	return View::make('pages/return_policy');
 });
 
 Route::get('privacy', function()
 {
-	$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
-	return View::make('pages/privacy_policy', ['cart_contents' => $cart_contents]);
+	return View::make('pages/privacy_policy');
 });
 
-Route::get('contact', ['uses' => 'ContactController@index', 'as' => 'pages.contact']);
-Route::post('contact', ['uses' => 'ContactController@store']);
+Route::get('contact', [
+	'uses' => 'ContactController@index',
+	'as' => 'pages.contact'
+]);
+
+Route::post('contact', [
+	'uses' => 'ContactController@store'
+]);
 
 Route::get('products', function()
 {
-	$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
-	return View::make('pages/products', array('cart_contents' => $cart_contents));
+	return View::make('pages/products');
 });
 
 Route::get('products/{product}', function($product)
 {
-	$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
-	return View::make('products/'. $product, array('cart_contents' => $cart_contents))->with('product', $product);
+	return View::make('products/'. $product)
+		->with('product', $product);
 });
 
-Route::put('cart/add/{product}', array('uses' => 'CartController@add', 'as' => 'cart.add'));
-Route::patch('cart', array('uses' => 'CartController@update', 'as' => 'cart.update'));
-Route::get('cart/delete/{product_id}', array('uses' => 'CartController@destroy', 'as' => 'cart.delete'));
-Route::get('cart', 'CartController@index');
+Route::put('cart/add/{product}', [
+	'uses' => 'CartController@add',
+	'as' => 'cart.add'
+]);
+
+Route::patch('cart', [
+	'uses' => 'CartController@update',
+	'as' => 'cart.update'
+]);
+
+Route::get('cart/delete/{product_id}', [
+	'uses' => 'CartController@destroy',
+	'as' => 'cart.delete'
+]);
+
+Route::get('cart', [
+	'uses' => 'CartController@index',
+	'as' => 'cart.index'
+]);
+
 Route::get('checkout', 'ShippingController@index');
+
+Route::post('tracking', 'WebhookController@packageShipped');
+
+Route::get('payment', [
+	'uses' => 'CartController@postPayment',
+	'as' => 'cart.paypal_payment'
+]);
+
+Route::resource('paypal_review', 'PayPalReviewController');
 Route::resource('shipping', 'ShippingController');
 Route::resource('billing', 'BillingController');
-Route::resource('review', 'ReviewController');
 Route::resource('confirm', 'ConfirmController');
-Route::post('tracking', 'WebhookController@packageShipped');

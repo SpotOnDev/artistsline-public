@@ -13,10 +13,7 @@
 
 App::before(function($request)
 {
-	if( ! Request::secure())
-	{
-		return Redirect::secure(Request::path());
-	}
+	//
 });
 
 App::after(function($request, $response)
@@ -24,10 +21,25 @@ App::after(function($request, $response)
 	//
 });
 
+Route::filter('secureRequest', function($request)
+{
+	if( ! Request::secure())
+	{
+		return Redirect::secure(Request::path());
+	}
+});
+
 Route::filter('emptyCart', function()
 {
 	if(Cart::where('user_session_id', Session::getId())->count() < 1){
-		return Redirect::to('/');
+		return View::make('carts/empty_cart');
+	}
+});
+
+Route::filter('invalidPayPalRequest', function()
+{
+	if (!Input::has('PayerID') || !Input::has('token')) {
+		return Redirect::route('cart.index');
 	}
 });
 
@@ -56,8 +68,8 @@ Route::filter('noCustomerId', function()
 
 Route::filter('noToken', function()
 {
-	if(!Session::has('stripe_token')){
-		return Redirect::to('/');
+	if(!Session::has('stripe_token') || !Session::has('paypal_payment_id')){
+		return Redirect::to('cart');
 	}
 });
 

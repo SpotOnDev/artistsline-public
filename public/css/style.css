@@ -532,6 +532,7 @@ table p {
 #paypal {
 	float: right;
 	margin-right: 40px;
+	padding-top: 15px;
 }
 
 #paypal > p {

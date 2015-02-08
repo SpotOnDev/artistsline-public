@@ -5,7 +5,7 @@
         <meta charset="utf-8">
     </head>
     <body>
-        <p>Thank you for your order. Your order number is {{ $order_id  }} and Tracking number(s): {{ $tracking_numbers }}. All orders are processed on the next business day. You will be contacted in case of any delays.</p>
+        <p>Thank you for your order. Your order number is {{ $order_id  }}. All orders are processed on the next business day. You should receive and e-mail once your package(s) has shipped along with the tracking information. You will be contacted in case of any delays.</p>
         <table border="0" cellspacing="3" cellpadding="3">
             <tr>
                 <th align="center">Item</th>

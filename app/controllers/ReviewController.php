@@ -1,23 +1,31 @@
 <?php
+use \PayPal\Api\Payment;
+use \PayPal\Api\PaymentExecution;
+use PayPal\Rest\ApiContext;
+use PayPal\Auth\OAuthTokenCredential;
+
 App::bind('Billing\BillingInterface', 'Billing\StripeBilling');
 App::bind('Shipping\ShippingInterface', 'Shipping\EasyPostShipping');
 class ReviewController extends \BaseController {
 
+	private $_api_context;
+
 	public function __construct()
 	{
-		//$this->beforeFilter('noToken', array('on' => 'get'));
+		$this->beforeFilter('emptyCart', ['on' => 'get']);
+		$this->beforeFilter('noToken', array('on' => 'get'));
 		$this->beforeFilter('emptyCart', array('on' => 'get'));
 	}
 
 	public function index()
 	{
 		$bill = App::make('Billing\BillingInterface');
+		$billing_info = $bill->retrieveCustomer(['token' => Session::get('stripe_token')])->card;
 		$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
 		$shopper = Shopper::find(Session::get('shopper_id'));
 		$shipping = calculateShipping($cart_contents) * SHIP_RATE;
-		if(cartTotal($cart_contents) > 3000) $shipping = 0;
-		return View::make('checkout/review', ['page_title' => 'Review Order', 'review_header' => 'class="active"', 'shopper' => $shopper, 'shipping' => $shipping, 'billing' => $bill->getInfo(Session::get('stripe_token'))->card, 'cart_contents' => $cart_contents, 'total' => 0, 'i' => 0]);
-
+		if (cartTotal($cart_contents) > 3000) $shipping = 0;
+		return View::make('checkout/review', ['page_title' => 'Review Order', 'review_header' => 'class="active"', 'shopper' => $shopper, 'shipping' => $shipping, 'billing' => $billing_info, 'cart_contents' => $cart_contents, 'total' => 0, 'i' => 0]);
 	}
 
 
@@ -39,9 +47,6 @@ class ReviewController extends \BaseController {
 	 */
 	public function store()
 	{
-		$bill = App::make('Billing\BillingInterface');
-		$billing_info = $bill->getInfo(Session::get('stripe_token'))->card;
-
 		$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
 		$shipping_amount = calculateShipping($cart_contents) * SHIP_RATE;
 		$total = cartTotal($cart_contents);
@@ -65,10 +70,10 @@ class ReviewController extends \BaseController {
 			$customer_id = $customer->id;
 
 			$order = new Order;
-			$order->customer_id = $shopper->id;
+			$order->customer_id = $customer_id;
 			$order->total = $total;
 			$order->shipping = $shipping_amount;
-			$order->credit_card_number = $billing_info->last4;
+			$order->type = 'stripe';
 			$order->save();
 			$order_id = $order->id;
 
@@ -126,6 +131,8 @@ class ReviewController extends \BaseController {
 
 			if($charge->paid)
 			{
+				$order->provider_id = $charge->id;
+				$order->save();
 				$tracking_numbers = null;
 				$n = 1;
 				foreach ($shipment as $package){
@@ -167,7 +174,6 @@ class ReviewController extends \BaseController {
 		}
 		return Redirect::refresh();
 	}
-
 
 	/**
 	 * Display the specified resource.

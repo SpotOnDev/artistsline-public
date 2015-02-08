@@ -1,5 +1,4 @@
 <?php namespace Billing;
-
 use Stripe;
 use Stripe_Charge;
 use Config;
@@ -24,8 +23,8 @@ class StripeBilling implements BillingInterface {
 
         return $charge;
     }
-    public function getInfo($token)
+    public function retrieveCustomer(array $data)
     {
-        return Stripe_Token::retrieve($token);
+        return Stripe_Token::retrieve($data['token']);
     }
 }
