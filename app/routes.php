@@ -10,6 +10,18 @@
 |
 */
 
+use PayPal\Rest\ApiContext;
+use PayPal\Auth\OAuthTokenCredential;
+use PayPal\Api\Amount;
+use PayPal\Api\Details;
+use PayPal\Api\Item;
+use PayPal\Api\ItemList;
+use PayPal\Api\Payer;
+use PayPal\Api\Payment;
+use PayPal\Api\RedirectUrls;
+use PayPal\Api\Transaction;
+use PayPal\Api\PaymentExecution;
+
 Route::get('/', function()
 {
 	return View::make('pages/home');
@@ -96,3 +108,62 @@ Route::resource('paypal_review', 'PayPalReviewController');
 Route::resource('shipping', 'ShippingController');
 Route::resource('billing', 'BillingController');
 Route::resource('confirm', 'ConfirmController');
+
+Route::get('paypal_test', function()
+{
+	$paypal_config = Config::get('paypal');
+	$_api_context = new ApiContext(new OAuthTokenCredential($paypal_config['client_id'], $paypal_config['secret']));
+	$_api_context->setConfig($paypal_config['settings']);
+
+	$payer = new Payer();
+	$payer->setPaymentMethod("paypal");
+	$shipping = 1.00;if(cartTotal() > 3000) $shipping = 0;
+
+
+	$item = new Item();
+	$item->setName('brush')
+		->setCurrency('USD')
+		->setQuantity(1)
+		->setPrice(15.00);
+
+	$itemList = new ItemList();
+	$itemList->setItems([$item]);
+
+	$details = new Details();
+	$details->setShipping($shipping)
+		->setSubtotal(15.00);
+
+	$amount = new Amount();
+	$amount->setCurrency("USD")
+		->setTotal(16.00)
+		->setDetails($details);
+
+	$transaction = new Transaction();
+	$transaction->setAmount($amount)
+		->setItemList($itemList)
+		->setDescription("Payment description")
+		->setInvoiceNumber(uniqid());
+
+	$redirect_urls = new RedirectUrls();
+	$redirect_urls->setReturnUrl(URL::route('paypal_review.index'))
+		->setCancelUrl(URL::route('cart.index'));
+
+	$payment = new Payment();
+	$payment->setIntent("sale")
+		->setPayer($payer)
+		->setRedirectUrls($redirect_urls)
+		->setTransactions([$transaction]);
+
+	$payment->create($_api_context);
+
+	foreach($payment->getLinks() as $link)
+	{
+		if($link->getRel() == 'approval_url')
+		{
+			$redirect_url  = $link->getHref();
+			break;
+		}
+	}
+
+	return Redirect::away($redirect_url);
+});
