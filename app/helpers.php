@@ -37,7 +37,7 @@ function cartTotal()
 
     foreach($cart_contents as $item)
     {
-        $cart_total =+ $item->products['price'] * $item->quantity;
+        $cart_total += $item->products['price'] * $item['quantity'];
     }
 
     return $cart_total;

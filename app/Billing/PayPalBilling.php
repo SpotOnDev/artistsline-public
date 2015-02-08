@@ -36,7 +36,7 @@ class PayPalBilling implements BillingInterface {
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
         $shipping = calculateShipping($cart_contents) * SHIP_RATE;
-        if(cartTotal($cart_contents) > 3000) $shipping = 0;
+        if(cartTotal() > 3000) $shipping = 0;
 
         $i = 1;
         $item = [];
