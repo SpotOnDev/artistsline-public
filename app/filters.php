@@ -68,7 +68,14 @@ Route::filter('noCustomerId', function()
 
 Route::filter('noToken', function()
 {
-	if(!Session::has('stripe_token') || !Session::has('paypal_payment_id')){
+	if(Session::has('stripe_token') || Session::has('paypal_payment_id')){
+		if(Session::has('paypal_payment_id'))
+		{
+			if(!Input::has('PayerID')) return Redirect::to('cart');
+		}
+	}
+	else
+	{
 		return Redirect::to('cart');
 	}
 });

@@ -8,12 +8,10 @@ App::bind('Billing\BillingInterface', 'Billing\StripeBilling');
 App::bind('Shipping\ShippingInterface', 'Shipping\EasyPostShipping');
 class ReviewController extends \BaseController {
 
-	private $_api_context;
-
 	public function __construct()
 	{
 		$this->beforeFilter('emptyCart', ['on' => 'get']);
-		$this->beforeFilter('noToken', array('on' => 'get'));
+		$this->beforeFilter('noToken', ['on' => 'get']);
 		$this->beforeFilter('secureRequest', ['on' => 'get']);
 	}
 

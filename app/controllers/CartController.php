@@ -94,6 +94,7 @@ class CartController extends \BaseController {
 		$cart_contents = Cart::with('products')->where('user_session_id', Session::getId())->get();
 //		$billing = App::make('Billing\BillingInterface');
 		Session::forget('shopper_id');
+		Session::forget('billing_form');
 		try
 		{
 			$payer = $this->billing->generatePayer($cart_contents);

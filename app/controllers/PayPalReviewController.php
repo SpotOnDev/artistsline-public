@@ -19,7 +19,14 @@ class PayPalReviewController extends \BaseController {
         if (cartTotal($cart_contents) > 3000) $shipping = 0;
         Session::flash('payer_id', Input::get('PayerID'));
         $payment_id = Session::get('paypal_payment_id');
-        $payment = $this->billing->retrieveCustomer(['token' => $payment_id]);
+        try
+        {
+            $payment = $this->billing->retrieveCustomer(['token' => $payment_id]);
+        }
+        catch(Exception $e)
+        {
+            return Redirect::to('/');
+        }
         return View::make('checkout/review_paypal', ['page_title' => 'Review Order', 'review_header' => 'class="active"', 'shopper' => $payment, 'shipping' => $shipping, 'cart_contents' => $cart_contents, 'total' => 0, 'i' => 0]);
     }
 
