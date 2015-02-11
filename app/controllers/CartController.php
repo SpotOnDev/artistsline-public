@@ -5,7 +5,7 @@ class CartController extends \BaseController {
 
 	public function __construct(BillingInterface $billing)
 	{
-		$this->beforeFilter('emptyCart', array('on' => 'get'));
+		$this->beforeFilter('emptyCart', ['on' => 'get']);
 		$this->billing = $billing;
 	}
 

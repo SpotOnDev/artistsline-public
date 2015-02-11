@@ -14,7 +14,7 @@ class ReviewController extends \BaseController {
 	{
 		$this->beforeFilter('emptyCart', ['on' => 'get']);
 		$this->beforeFilter('noToken', array('on' => 'get'));
-		$this->beforeFilter('emptyCart', array('on' => 'get'));
+		$this->beforeFilter('secureRequest', ['on' => 'get']);
 	}
 
 	public function index()
