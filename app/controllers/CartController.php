@@ -140,7 +140,7 @@ class CartController extends \BaseController {
 	 */
 	public function update($product_id = NULL, $quantity = 1)
 	{
-		if(Input::get('quantity')){
+		if(Input::has('quantity')){
 			foreach (Input::get('quantity') as $product_id => $item_quantity){
 				if($item_quantity < 1){
 					$this->destroy($product_id);

@@ -16,13 +16,15 @@ class WebhookController extends \BaseController {
         $tracking_number = $event_json->result->tracking_code;
 
         $customer_id = Order::find($packages->first()->order_id)->pluck('customer_id');
-        $email = Customer::find($customer_id)->pluck('email');
+		$customer = Customer::find($customer_id)->get();
+        $email = $customer->email;
+		$customer_name = $customer->first_name . ' ' . $customer->last_name;
 
         if(!$email_sent && $event_json->result->status == 'in_transit')
         {
             $packages = serialize($packages);
-            Mail::queue(['html' => 'emails.tracking'], ['packages' => $packages, 'tracking' => $tracking_number], function ($message) use ($email) {
-                $message->to($email, 'John Smith')->subject('Welcome!');
+            Mail::queue(['html' => 'emails.tracking'], ['packages' => $packages, 'tracking' => $tracking_number], function ($message) use ($email, $customer_name) {
+                $message->to($email, $customer_name)->subject('Package Has Shipped');
             });
         }
 
