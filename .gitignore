@@ -11,3 +11,4 @@ Thumbs.db
 /app/config/easypost.php
 /app/config/paypal.php
 /app/config/stripe.php
+/app/config/database.php
