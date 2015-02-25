@@ -8,5 +8,6 @@ composer.lock
 .env.php
 .DS_Store
 Thumbs.db
-app/config/easypost.php
-app/config/paypal.php
+/app/config/easypost.php
+/app/config/paypal.php
+/app/config/stripe.php
